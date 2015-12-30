@@ -26,12 +26,45 @@ class LoginController extends Controller {
                 );
             echo json_encode($info);
         }else if(!$goal_salt){
-            $info = array(
-                    "info"  => "用户不存在",
-                    "state" => 401,
+            $student = M('student');
+            $stu_condition = array(
+                    'stu_id' => I('post.user_name'),
+                    'status' => 1,
                 );
-            session('testtime',session('testtime')+1);
-            echo json_encode($info);
+            $goal_stu = $student->where($stu_condition)->find();
+            if(!$goal_stu){
+                $info = array(
+                        "info"  => "用户不存在",
+                        "state" => 401,
+                    );
+                session('testtime',session('testtime')+1);
+                echo json_encode($info);
+            }elseif($goal_stu){
+                if(substr($goal_stu['idcard'],-6)==I('post.password')){
+                    $info = array(
+                        "info"  => "success",
+                        "state" => 200,
+                    );
+                    session('type','stu');
+                    session('stu_id',$goal_stu['stu_id']);
+                    session('username',$goal_stu['stu_name']);
+                    echo json_encode($info);
+                }else{
+                    session('testtime',session('testtime')+1);
+                    $info = array(
+                        "info"  => "密码错误",
+                        "state" => 404,
+                    );
+                    echo json_encode($info);
+                }
+            }else{
+                $info = array(
+                        "info"  => "用户不存在",
+                        "state" => 401,
+                    );
+                session('testtime',session('testtime')+1);
+                echo json_encode($info);
+            }
         }else{
             $condition = array(
                     "username" => I('post.user_name'),

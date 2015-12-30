@@ -10,7 +10,40 @@ class ExcelController extends BaseController {
     	$this->display('');
     }
 
+    public function showExcel(){
+    	$student = M('student');
+    	$goal_id = explode(',',I('post.stunum'));
+    	array_shift($goal_id);
+    	$num = count($goal_id);
+    	$last_goal = array();
+    	for($i = 0;$i<$num;$i++){
+    		$condition = array(
+    			'stu_id' => $goal_id[$i]
+    		);
+    		$goal_student = $student->where($condition)->field(
+    			'stu_name,stu_id,sex,class_id,idcard,province,mail,phone'
+    			)->find();
+    		array_push($last_goal,$goal_student);
+    	}
+    	$str = "姓名,学号,性别,班级,身份证号,省份,邮箱,电话\n";   
+	    $str = iconv('utf-8','gb2312',$str);   
+	    $student = M('student');
+	    $str = $student->select();
+	    for($i=0;$i<$num;$i++){
+	    	$middle .= implode(",",$last_goal[$i])."\n";
+	    }     
+	    $filename = date('Ymd').rand().'.csv'; //设置文件名  
+	    $middle = iconv('utf-8','gb2312',$middle);
+	    header("Content-type:text/csv");   
+	    header("Content-Disposition:attachment;filename=".$filename);   
+	    header('Cache-Control:must-revalidate,post-check=0,pre-check=0');   
+	    header('Expires:0');   
+	    header('Pragma:public');   
+	    echo $middle;   
+    }
+
     public function export(){
+    	$this->display('');exit;
     	$str = "姓名,性别,年龄\n";   
 	    $str = iconv('utf-8','gb2312',$str);   
 	    $student = M('student');
@@ -82,10 +115,36 @@ class ExcelController extends BaseController {
             $excel->add($value);
         }
     }
-    public function destory(){
-    	session(null);
-    	$this->redirect('Index/index');
+
+
+    public function searchStudent(){
+    	if(I('post.stunum')!=null){
+    		$condition['stu_id'] = I('post.stunum');
+    	}
+    	if(I('post.classid')!=null){
+    		$condition['class_id'] = I('post.classid');
+    	}
+    	if(I('post.province')!=null){
+    		$condition['province'] = I('post.province');
+    	}
+    	$student = M('student');
+    	$goal_student = $student->where($condition)->select();
+    	if(!$goal_student){
+    		$info = array(
+                    "info"  => "failed",
+                    "state" => 404,
+                );
+            echo json_encode($info);
+    	}else{
+    		$info = array(
+                    "info"  => "success",
+                    "state" => 200,
+                    "data"  => $goal_student,
+                );
+            echo json_encode($info);
+    	}
     }
+
 
     public function _empty() {
         $this->display('404/index');

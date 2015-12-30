@@ -2,41 +2,46 @@
 namespace Home\Controller;
 use Think\Controller;
 
-class IndexController extends BaseController {
+class IndexController extends Controller {
+	function _initialize(){
+        if(!isset($_SESSION['username'])) {
+            $this->redirect('login/index');exit;
+        }
+    }
     public function index(){
-    	$type = array(
-	    		"0" => 'jwzx',
-	    		"1" => 'cyxw'
-    		);
-    	for($i = 0; $i<2;$i++){
-	    	$data = array(
-		        	"type" => $type[$i],
-		        	"page" => 0,
-		        	"size" => 45
-	        	);
-	    	$output = $this->curl_init("http://hongyan.cqupt.edu.cn/cyxbsMobile/index.php/home/news/searchtitle",$data);
-	    	$output = (array)$this->objectToArray(json_decode($output));
-	    	$output = $output['data'];
-	    	//var_dump($output);
-	    	$data['page'] = 1;
-	    	$output_middle = $this->curl_init("http://hongyan.cqupt.edu.cn/cyxbsMobile/index.php/home/news/searchtitle",$data);
-	    	$output_middle = (array)$this->objectToArray(json_decode($output_middle));
-	    	for($m = 0;$m<30;$m++){
-	    		array_push($output,$output_middle['data'][$m]);
-	    	}
-	    	$num = count($output);
-	    	$Page = new \Think\Page($num,10);
-	    	$Page->lastSuffix=false;
-		    $Page->setConfig('prev','上一页');
-		    $Page->setConfig('next','下一页');
-		    $Page->setConfig('last','末页');
-		    $Page->setConfig('first','首页');
-		    $Page->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
-			$show = $Page->show(); 
-			$lists = array_slice($output, $Page->firstRow,$Page->listRows);
-			$this->assign('page'.$i,$show);
-			$this->assign('nodes'.$i,$lists);
-		}
+  //   	$type = array(
+	 //    		"0" => 'jwzx',
+	 //    		"1" => 'cyxw'
+  //   		);
+  //   	for($i = 0; $i<2;$i++){
+	 //    	$data = array(
+		//         	"type" => $type[$i],
+		//         	"page" => 0,
+		//         	"size" => 45
+	 //        	);
+	 //    	$output = $this->curl_init("http://hongyan.cqupt.edu.cn/cyxbsMobile/index.php/home/news/searchtitle",$data);
+	 //    	$output = (array)$this->objectToArray(json_decode($output));
+	 //    	$output = $output['data'];
+	 //    	//var_dump($output);
+	 //    	$data['page'] = 1;
+	 //    	$output_middle = $this->curl_init("http://hongyan.cqupt.edu.cn/cyxbsMobile/index.php/home/news/searchtitle",$data);
+	 //    	$output_middle = (array)$this->objectToArray(json_decode($output_middle));
+	 //    	for($m = 0;$m<30;$m++){
+	 //    		array_push($output,$output_middle['data'][$m]);
+	 //    	}
+	 //    	$num = count($output);
+	 //    	$Page = new \Think\Page($num,10);
+	 //    	$Page->lastSuffix=false;
+		//     $Page->setConfig('prev','上一页');
+		//     $Page->setConfig('next','下一页');
+		//     $Page->setConfig('last','末页');
+		//     $Page->setConfig('first','首页');
+		//     $Page->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+		// 	$show = $Page->show(); 
+		// 	$lists = array_slice($output, $Page->firstRow,$Page->listRows);
+		// 	$this->assign('page'.$i,$show);
+		// 	$this->assign('nodes'.$i,$lists);
+		// }
 		$this->display('Index/index');
     }
 
