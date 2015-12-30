@@ -13,12 +13,12 @@
     <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/themes/style1/pink-blue.css" class="default-style">
     <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/themes/style1/pink-blue.css" id="theme-change" class="style-change color-change">
     <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/style-responsive.css">
-
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/styles.css">
 </head>
-<body>
+<body style = "background-color: #74c9b5; height :480px;">
     <div class="page-form" style = "margin-top:200px;">
             <div class="header-content">
-                <h1>后台管理系统2333</h1>
+                <h1 style = "color:#777777;">后台管理系统2333</h1>
             </div>
                 <div class="body-content">
                     <div class="form-group">
@@ -49,9 +49,26 @@
                     <div class="clearfix"></div>
                 </div>
     </div>
+    <ul class="bg-bubbles" style = "z-index:-1;">
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+            <li></li>
+    </ul>
 </body>
     <script src = "__PUBLIC__/js/jquery.min.js"></script>
     <script>
+        $('#login-button').click(function(event){
+            event.preventDefault();
+            $('.all').addClass('form-success');
+        }); 
+        $('#login-button').trigger("focus");
         var queryUrl = "{:U('Register/register')}"; 
         $('#register').on('click', function () {
             $.ajax({

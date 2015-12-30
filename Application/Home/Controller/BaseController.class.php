@@ -11,7 +11,7 @@ class BaseController extends Controller {
         $notAuth = in_array(MODULE_NAME, explode(',', C('NOT_AUTH_MODULE'))) || in_array(ACTION_NAME, C('NOT_AUTH_ACTION'));
         //权限验证
         if(C('USER_AUTH_ON') && !$notAuth) {
-            RBAC::AccessDecision('HOME') || $this->error("你没有权限",U("Login/index"));
+            RBAC::AccessDecision('HOME') || $this->error("你没有权限",U("Index/index"));
         }
     }
 }

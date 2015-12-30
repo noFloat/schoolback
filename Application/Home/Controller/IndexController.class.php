@@ -25,7 +25,7 @@ class IndexController extends BaseController {
 	    		array_push($output,$output_middle['data'][$m]);
 	    	}
 	    	$num = count($output);
-	    	$Page = new \Think\Page($num,15);
+	    	$Page = new \Think\Page($num,10);
 	    	$Page->lastSuffix=false;
 		    $Page->setConfig('prev','上一页');
 		    $Page->setConfig('next','下一页');
@@ -74,9 +74,16 @@ class IndexController extends BaseController {
         return $output;
     }
 
+   	public function searchStudent(){
+   		$data['stunum'] = I('post.stunum');
+   		$output = $this->curl_init("http://hongyan.cqupt.edu.cn/cyxbsMobile/index.php/home/searchPeople",$data);
+   		$output = json_encode(json_decode($output));
+   		echo $output;
+   	}
+
     public function destory(){
     	session(null);
-    	$this->redirect('Index/index');
+    	$this->redirect('Login/index');
     }
 
     public function _empty() {

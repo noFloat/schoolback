@@ -9,15 +9,7 @@ class LoginController extends Controller {
     }
 
     public function checkLogin(){
-    	// import('Org.Util.Rbac');
-    	// var_dump($_POST);
-    	// echo C('USER_AUTH_ON');
-    	// echo C('USER_AUTH_KEY');
-    	// if(I('post.user_name') == "admin"){
-    		
-    		
-    	// }
-    	//Rbac::checkLogin();
+
         $user = M('user');
         $salt_condition =array(
                 "username" => I('post.user_name'),

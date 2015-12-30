@@ -6,9 +6,9 @@
                             <li class="active">
                                 <a href="#panel-873605" data-toggle="tab">教务在线</a>
                             </li>
-                            <!-- <li>
-                                <a href="#panel-411320" data-toggle="tab">重邮新闻</a>
-                            </li> -->
+                            <li>
+                                <a href="#panel-411320" data-toggle="tab">查找学生</a>
+                            </li>
                         </ul>
                         <div class="tab-content">
                             <div class="tab-pane active" id="panel-873605">
@@ -31,26 +31,26 @@
                                    </tbody>
                                 </table>
                             </div>
-<!--                             <div class="tab-pane" id="panel-411320">
+                            <div class="tab-pane" id="panel-411320">
                                 <table class="table table-striped">
                                    <caption></caption>
                                    <thead>
+                                       <div style = "margin-top:6px;"> 
+                                         <input type = "text" id = "stunum" placeholder = "请输入学号">
+                                        <button type = "submit " id = "submit_stu" class = "btn btn-default" style = "height:24px;margin-left:10px;line-height:5px;" >查找学生</button>
+                                       </div>
+                                      
                                       <tr>
-                                         <th>名称</th>
-                                         <th>内容</th>
+                                         <th>姓名</th>
+                                         <th>性别</th>
+                                         <th>班级号</th>
+                                         <th>专业</th>
                                       </tr>
                                    </thead>
-                                   <tbody>
-                                      <volist name="nodes1" id="nodes">
-                                        <tr>
-                                           <td><a href = "{:U('Index/searchContent')}?articleid={$nodes.articleid}&type=jwzx" style = "text-decoration:none;">{$nodes.title}</a></td>
-                                           <td>{$nodes.date}</td>
-                                        </tr>
-                                      </volist>
-                                      <td>{$page1}</td><td></td>
+                                   <tbody class = "content_stu">
                                    </tbody>
                                 </table>
-                            </div> -->
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -58,3 +58,30 @@
             </div>
         </div>
     <include file="Layout:footer" />
+    <script>
+        var queryUrl = "{:U('Index/searchStudent')}"; 
+        $('#submit_stu').on('click', function () {
+            $.ajax({
+                url: queryUrl,
+                type: 'POST',
+                data: {
+                    stunum: $('#stunum').val(),
+                },
+                dataType: '',
+                success: function (res) {
+                    var data = $.parseJSON(res);
+                    var string;
+                    if (data.state == 200) {
+                      $('.content_stu').children().remove();
+                      string += "<tr><td>"+data.data.name+"</td>"+"<td>"+data.data.gender+"</td>"+"<td>"+data.data.classnum+"</td>"+"<td>"+data.data.major+"</td></tr>";
+                      $('.content_stu').append(string);
+                    }else{
+                        alert(data.info);
+                    }
+                },
+                error: function () {
+                    alert('网络错误');
+                }
+            })
+        });
+    </script>

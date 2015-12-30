@@ -57,7 +57,8 @@ db.php
 config.php
 Application/Data/
 Application/Runtime/
-
+Public/Excel/
+*.xlsx
 # Created by .ignore support plugin (hsz.mobi)
 
 
