@@ -112,8 +112,29 @@ class ExcelController extends BaseController {
 		$excel =  M('student');
 		$num = count($arr);
         foreach($arr as $key => $value){
-            $excel->add($value);
+        	$condition = array(
+        			"stu_id" => $arr[$key]['stu_id'],
+        		);
+        	$output = $excel->where($condition)->find();
+        	//var_dump($output);
+        	if($output){
+            	$goal = $excel->where($condition)->data($value)->save();
+        	}else{
+        		$goal = $excel->add($value);
+        	}
+        }	
+        if($goal){
+        	$info = array(
+        		"info"  => "success",
+                "state" => 200,
+        	);
+        }else{
+        	$info = array(
+                    "info"  => "failed",
+                    "state" => 404,
+            );
         }
+        echo json_encode($info);
     }
 
 
