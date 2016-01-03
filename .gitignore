@@ -56,7 +56,7 @@ gen
 db.php
 config.php
 Application/Data/
-Application/Home/Controlller/RegisterController.class.php
+RegisterController.class.php
 Application/Runtime/
 Public/Excel/
 Public/Annex/
