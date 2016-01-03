@@ -2,7 +2,7 @@
 namespace Home\Controller;
 use Think\Controller;
 use Org\Util\Rbac;
-//
+///
 class RegisterController extends Controller {
 
     public function index(){
