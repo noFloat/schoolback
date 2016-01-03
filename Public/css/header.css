@@ -1,6 +1,6 @@
 .left{
 	position: relative;
-	right: 320px;
+	right: 330px;
 	height:100%;
 	width:10%;
 	float:left;
@@ -21,7 +21,7 @@
 }
 .continer{
 	position: relative;
-	right: 300px;
+	right: 320px;
 	padding-left:0.5%;
 	width:50%;
 	height:100%;

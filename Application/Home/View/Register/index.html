@@ -15,7 +15,7 @@
     <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/style-responsive.css">
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/css/styles.css">
 </head>
-<body style = "background-color: #74c9b5; height :480px;">
+<body style = "background-color: #74c9b5; height :480px;overflow:hidden;">
     <div class="page-form" style = "margin-top:200px;">
             <div class="header-content">
                 <h1 style = "color:#777777;">后台管理系统2333</h1>
@@ -84,7 +84,7 @@
                 success: function (res) {
                     var data = $.parseJSON(res);
                     if (data.state == 200) {
-
+                        alert('等待审核');
                     }else if(data.state == 404){
                        alert("系统出错");
                     }else if(data.state == 400){

@@ -11,7 +11,7 @@
         <link href="__PUBLIC__/bootstrap/css/bootstrap.min.css" rel="stylesheet">
         <link type="text/css" rel="stylesheet" href="__PUBLIC__/css/header.css">
     </head>
-<body>
+<body style = "overflow:hidden;">
 <div class = "top-box">
     <nav class="navbar navbar-default" role="navigation">
        <div class="navbar-header" style = "width:150px;">
@@ -22,9 +22,9 @@
             <if condition="$Think.session.username eq NULL">
               <li class="active"><a href="#">游客</a></li>
             <else /> 
-              <li class="active"><a href="#">{$Think.session.username}</a></li>
+              <li style = "width:60px float:left;" ><a href="#" style = "display:block;text-align:center;">{$Think.session.username}</a></li>
             </if>
-             <li class="dropdown">
+             <li class="dropdown" style = "">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                    个人中心
                    <b class="caret"></b>
@@ -35,7 +35,9 @@
                 <if condition="$Think.session.type neq NULL">
                    <li><a href="{:U('Personal/index')}">修改个人资料</a></li>
                    <li class="divider"></li>
-                </if>   
+                </if>
+                    <li><a href="{:U('Personal/showPWD')}">修改密码</a></li>
+                   <li class="divider"></li>   
                 </ul>
              </li>
           </ul>
@@ -51,8 +53,8 @@
                         <ul class="nav nav-pills nav-stacked">
                            <li><a href="{:U('Index/index')}">教务查询</a></li>
                            <li><a href="{:U('Excel/export')}">导出学生</a></li>
-                           <li><a href="{:U('Excel/index')}">添加学生</a></li>
-                           <li><a href="{:U('Developer/index')}">root</a></li>
+                           <li><a href="{:U('Excel/index')}">教务处</a></li>
+                           <li><a href="{:U('Root/index')}">root</a></li>
                         </ul>
                     </div>
                 </div>

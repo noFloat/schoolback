@@ -42,6 +42,19 @@ class IndexController extends Controller {
 			$this->assign('page'.$i,$show);
 			$this->assign('nodes'.$i,$lists);
 		}
+		$annex = M('annex');
+		$goal = $annex->where('state = 1')->select();
+		$this->assign('goal',$goal);// 赋值数据集
+		$count = $annex->where('state=1')->count();// 查询满足要求的总记录数$Page       
+		$need_annex= new \Think\Page($count,15);// 实例化分页类 传入总记录数和每页显示的记录数
+		$need_annex->lastSuffix=false;
+	    $need_annex->setConfig('prev','上一页');
+	    $need_annex->setConfig('next','下一页');
+	    $need_annex->setConfig('last','末页');
+	    $need_annex->setConfig('first','首页');
+	    $need_annex->setConfig('theme','%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%');
+		$annex_show = $need_annex->show();// 分页显示输出
+		$this->assign('annex',$annex_show);// 赋值分页输出
 		$this->display('Index/index');
     }
 
@@ -85,6 +98,7 @@ class IndexController extends Controller {
    		$output = json_encode(json_decode($output));
    		echo $output;
    	}
+
 
     public function destory(){
     	session(null);

@@ -40,7 +40,7 @@ class LoginController extends Controller {
                 session('testtime',session('testtime')+1);
                 echo json_encode($info);
             }elseif($goal_stu){
-                if(substr($goal_stu['idcard'],-6)==I('post.password')){
+                if($goal_stu['password']==md5(hash('sha256', ($goal_stu['salt'] % 3))).sha1(I('post.password'))){
                     $info = array(
                         "info"  => "success",
                         "state" => 200,

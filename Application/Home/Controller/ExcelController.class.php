@@ -43,23 +43,7 @@ class ExcelController extends BaseController {
     }
 
     public function export(){
-    	$this->display('');exit;
-    	$str = "姓名,性别,年龄\n";   
-	    $str = iconv('utf-8','gb2312',$str);   
-	    $student = M('student');
-	    $str = $student->select();
-
-	    for($i=0;$i<16;$i++){
-	    	$middle .= implode(",",$str[$i])."\n";
-	    }     
-	    $filename = date('Ymd').rand().'.csv'; //设置文件名  
-	    $middle = iconv('utf-8','gb2312',$middle);
-	    header("Content-type:text/csv");   
-	    header("Content-Disposition:attachment;filename=".$filename);   
-	    header('Cache-Control:must-revalidate,post-check=0,pre-check=0');   
-	    header('Expires:0');   
-	    header('Pragma:public');   
-	    echo $middle;   
+    	$this->display('');
     }
 
     public function import(){  
@@ -70,18 +54,22 @@ class ExcelController extends BaseController {
 		$upload->saveName = time().'_'.mt_rand();
 		$upload->autoSub = false;
 	    $a = $upload->upload();
+        if($upload->getError() != null){
+            $this->error("您未上传文件");
+        }
     	import("Org.Util.PHPExcel");
 		//要导入的xls文件，位于根目录下的Public文件夹
 		$filename="./Public/Excel/".$upload->saveName.".".$a['excel']['ext'];
 		//创建PHPExcel对象，注意，不能少了\
 		$PHPExcel=new \PHPExcel();
 		//如果excel文件后缀名为.xls，导入这个类
-		//import("Org.Util.PHPExcel.Reader.Excel5");
-		//如果excel文件后缀名为.xlsx，导入这下类
-		import("Org.Util.PHPExcel.Reader.Excel2007");
-		$PHPReader=new \PHPExcel_Reader_Excel2007();
-
-		//$PHPReader=new \PHPExcel_Reader_Excel5();
+        if($a['excel']['ext'] == 'xls'){
+            import("Org.Util.PHPExcel.Reader.Excel5");
+            $PHPReader=new \PHPExcel_Reader_Excel5();
+        }else{
+            import("Org.Util.PHPExcel.Reader.Excel2007");
+        $PHPReader=new \PHPExcel_Reader_Excel2007();
+        }
 		$PHPExcel=$PHPReader->load($filename);
 		//获取表中的第一个工作表，如果要获取第二个，把0改为1，依次类推
 		$currentSheet=$PHPExcel->getSheet(0);
@@ -96,7 +84,7 @@ class ExcelController extends BaseController {
 				C => "sex",
 				D => "class_id",
 				E => "idcard",
-				F => "province"
+				F => "province",
 			);
 		for($currentRow=1;$currentRow<=$allRow;$currentRow++){
 			//从哪列开始，A表示第一列
@@ -115,6 +103,9 @@ class ExcelController extends BaseController {
         	$condition = array(
         			"stu_id" => $arr[$key]['stu_id'],
         		);
+            $salt = mt_rand(10,200000);
+            $value['salt'] = $salt;
+            $value['password'] = md5(hash('sha256', ($salt % 3))).sha1(substr($value['idcard'],-6));
         	$output = $excel->where($condition)->find();
         	//var_dump($output);
         	if($output){
@@ -128,13 +119,16 @@ class ExcelController extends BaseController {
         		"info"  => "success",
                 "state" => 200,
         	);
+            $log = D('Log');
+            $log->addLog('导入学生');
+            $this->success("添加成功");
         }else{
         	$info = array(
                     "info"  => "failed",
                     "state" => 404,
             );
+            $this->error("添加失败");
         }
-        echo json_encode($info);
     }
 
 
@@ -166,6 +160,96 @@ class ExcelController extends BaseController {
     	}
     }
 
+    public function update(){
+        $student = M('student');
+        $content = array(
+                "stu_name" => I('post.stu_name'),
+                "sex"  => I('post.stu_sex'),
+                "class_id" => I('post.stu_class'),
+                "province" => I('post.stu_province'),
+                "status"   => I('post.status'),
+            );
+        $condition = array(
+                "stu_id" => I('post.stu_id')
+            );
+        $goal = $student->where($condition)->data($content)->save();
+        if($goal){
+            $this->success('修改成功');
+        }else{
+            $this->error("修改失败");
+        }
+    }
+
+    public function addAnnex(){
+        $upload = new \Think\Upload();
+        $upload->maxSize = 0;
+        $upload->exts = array('docx', 'doc',"zip");
+        $upload->rootPath  =  "./Public/Annex/";
+        $upload->saveName = time().'_'.mt_rand();
+        $upload->autoSub = false;
+        $a = $upload->upload();
+        $annex = M('annex');
+        $content = array(
+                "username" => session('username'),
+                "date"     => date("Y-m-d H:i:s", time()),
+                "title" => I('post.title'),
+                "position" => "./Public/Annex/".$upload->saveName.".".$a['fold']['ext'],
+                'state'    => 1
+            );
+        $goal = $annex->where($condition)->add($content);
+        if($goal){
+            $log = D('Log');
+            $log->addLog('添加附件');
+            $this->success("添加成功");
+        }else{
+            $log = D('Log');
+            $log->addLog('添加附件失败');
+            $this->error("添加失败");
+        }
+    }
+
+    public function addOne(){
+        $salt = mt_rand(10,200000);
+        $content = array(
+            'stu_name' => I('post.addone_name'),
+            'sex'      => I('post.addone_sex'),
+            'stu_id'    => I('post.addone_stuid'),
+            'province' => I('post.addone_province'),
+            'class_id' => I('post.addone_classid'),
+            'idcard'   => I('post.addone_idcard'),
+            'password' => md5(hash('sha256', ($salt % 3))).sha1(substr(I('post.addone_idcard'),-6)),
+            'salt'     => $salt,
+
+        );
+        foreach($content as $key => $value){
+            if($value = null){
+                $info = array(
+                    "info"  => "请保证数据无空值",
+                    "state" => 404,
+                );
+                echo json_encode($info);
+            }
+        }
+        $student = M('student');
+        $condition = array(
+                "stu_id" => I('post.addone_stuid')
+            );
+        $goal_student = $student->where($condition)->find();
+        if($goal_student){
+            $info = array(
+                    "info"  => "该学生已存在，添加失败",
+                    "state" => 404,
+                );
+            echo json_encode($info);
+        }else{
+            $student->add($content);
+            $info = array(
+                "info"  => "添加成功",
+                "state" => 200,
+            );
+            echo json_encode($info);
+        }
+    }
 
     public function _empty() {
         $this->display('404/index');

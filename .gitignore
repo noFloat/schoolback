@@ -56,8 +56,10 @@ gen
 db.php
 config.php
 Application/Data/
+Application/Home/Controlller/RegisterController.class.php
 Application/Runtime/
 Public/Excel/
+Public/Annex/
 *.xlsx
 # Created by .ignore support plugin (hsz.mobi)
 
