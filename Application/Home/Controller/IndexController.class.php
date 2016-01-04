@@ -8,6 +8,19 @@ class IndexController extends Controller {
             $this->redirect('login/index');exit;
         }
     }
+
+    /**
+    * @name index
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param 
+    * @return 
+    * @throws 
+    * @todo 新闻的移植,内网需要代理才可获取，新闻代码详情见NewsController.class.php
+    * @var $annex附件结果集,$page.$i新闻结果集
+    * @version 1.0
+    */
     public function index(){
     	$type = array(
 	    		"0" => 'jwzx',
@@ -57,7 +70,18 @@ class IndexController extends Controller {
 		$this->assign('annex',$annex_show);// 赋值分页输出
 		$this->display('Index/index');
     }
-
+    /**
+    * @name searchContent
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param 
+    * @return 
+    * @throws 服务器接口出错
+    * @todo 新闻获取接口的移植,内网需要代理才可获取，新闻代码详情见NewsController.class.php
+    * @var 
+    * @version 1.0
+    */
     public function searchContent(){
     	$data = array(
     		"type"      => I('get.type'),
@@ -69,7 +93,18 @@ class IndexController extends Controller {
 		$this->display('Index/content');
 		//$this->display('Index/index');
     }
-
+    /**
+    * @name objectToArray
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param 
+    * @return 返回数组结果集
+    * @throws 
+    * @todo 
+    * @var $e需转换对象
+    * @version 1.0
+    */
     private function objectToArray($e){
 	    $e=(array)$e;
 	    foreach($e as $k=>$v){
@@ -79,7 +114,18 @@ class IndexController extends Controller {
 	    }
 	    return $e;
 	}
-
+	/**
+    * @name curl_init
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param $url目标url，$data参数
+    * @return 
+    * @throws 接口服务器出错
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     private function curl_init($url,$data){//初始化目标网站
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -91,7 +137,18 @@ class IndexController extends Controller {
         $output = curl_exec($ch);
         return $output;
     }
-
+    /**
+    * @name searchStudent
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param $stunum目标学生学号
+    * @return 返回学生信息数组 
+    * @throws 接口服务器出错
+    * @todo 完善判断
+    * @var 
+    * @version 1.0
+    */
    	public function searchStudent(){
    		$data['stunum'] = I('post.stunum');
    		$output = $this->curl_init("http://hongyan.cqupt.edu.cn/cyxbsMobile/index.php/home/searchPeople",$data);

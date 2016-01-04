@@ -7,7 +7,20 @@ class LoginController extends Controller {
     public function index(){
 		$this->display('');
     }
-
+    /**
+    * @name checkLogin
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param 
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 
+    * @todo 保证安全，滑动式验证码
+    * @var 加密md5(hash('sha256', ($goal_stu['salt'] % 3))).sha1(I('post.password'))
+    * @version 1.0
+    */
     public function checkLogin(){
 
         $user = M('user');

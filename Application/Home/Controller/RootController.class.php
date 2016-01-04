@@ -7,12 +7,24 @@ class RootController extends BaseController {
     private $role;
     private $role_user;
     private $log;
-    public function init(){
+    public function init(){//模板初始化
         $this->user = M('user');
         $this->role_user = M('role_user');
         $this->role = M('role');
         $this->log = M('log');
     }
+    /**
+    * @name index
+    * @access root
+    * @const 指明常量
+    * @module Home
+    * @param 
+    * @return 渲染对应视图
+    * @throws 
+    * @todo 
+    * @var $all_log所有日志分页，$wait_user待审核用户
+    * @version 1.0
+    */
     public function index(){
         $this->init();
         $all_user = $this->user
@@ -39,7 +51,20 @@ class RootController extends BaseController {
         $this->assign('log',$all_log);
 		$this->display('');
     }
-
+    /**
+    * @name changeRole
+    * @access root
+    * @const 指明常量
+    * @module Home
+    * @param $role更改角色,$user_id目标用户
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 非法用户
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function changeRole(){
         $this->init();
         $condition_role = array(
@@ -67,7 +92,20 @@ class RootController extends BaseController {
             echo json_encode($info);
         }
     }
-
+    /**
+    * @name changeRole
+    * @access root
+    * @const 指明常量
+    * @module Home
+    * @param $user_id目标用户
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 非法用户
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function checkRole(){
         $this->init();
         $condition = array(

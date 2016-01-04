@@ -2,20 +2,36 @@
 namespace Home\Controller;
 use Think\Controller;
 use Org\Util\Rbac;
-///
 class RegisterController extends Controller {
 
     public function index(){
 		$this->display('');
     }
-
+    /**
+    * @name register
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param $user_name=>用户名,$password=>密码,$check_password=>$确认密码,$email=>邮箱
+    * @return 
+    * @throws 接口服务器出错
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function register(){
         $user = M('user');
         $condition = array(
             "username" => I('post.user_name')
         );
         $goal_user = $user->where($condition)->find();
-        if(I('post.password') != I('post.check_password') || 
+        if(I('post.user_name') == null){
+            $info = array(
+                    "info"  => "请输入用户名",
+                    "state" => 400,
+                );
+            echo json_encode($info);
+        }elseif(I('post.password') != I('post.check_password') || 
             strlen(I('post.password')) < 6 || strlen(I('post.password'))> 11){
             $info = array(
                     "info"  => "failed",
@@ -60,7 +76,18 @@ class RegisterController extends Controller {
     public function forget(){
         $this->display('');
     }
-
+    /**
+    * @name sendMail
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param $user_id用户id
+    * @return session('check_cod')验证码,session('check_type')用户类型，返回数组
+    * @throws 发送邮件邮箱gg
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function sendMail(){
         $student = M('student');
         $condition = array(
@@ -113,7 +140,20 @@ class RegisterController extends Controller {
         }
         exit;
     }
-
+    /**
+    * @name changePssword
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param check_code=>验证码,user_id=>学号
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function changePassword(){
         if(I('post.check_code')!= session('check_code')){
             $info = array(

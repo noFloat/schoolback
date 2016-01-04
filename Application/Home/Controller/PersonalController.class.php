@@ -13,7 +13,20 @@ class PersonalController extends Controller {
     public function index(){
 		$this->display('');
     }
-
+    /**
+    * @name change
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param $mail邮箱，$phone电话
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 非法用户
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function change(){
         $student = M('student');
         $condition = array(
@@ -40,7 +53,20 @@ class PersonalController extends Controller {
     public function showPWD(){
         $this->display('Personal/change');
     }
-
+    /**
+    * @name changePWD
+    * @access 
+    * @const 指明常量
+    * @module Home
+    * @param $user_name用户标识符,$user_id目标用户
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 非法用户
+    * @todo 
+    * @var salt随机数字盐
+    * @version 1.0
+    */
     public function changePWD(){
         if(session('type') == null){
             $user = M('user');

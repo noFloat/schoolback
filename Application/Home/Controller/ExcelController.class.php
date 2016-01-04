@@ -2,32 +2,13 @@
 namespace Home\Controller;
 use Think\Controller;
 /**
-* @name 名字
-* @abstract 申明变量/类/方法
-* @access 指明这个变量、类、函数/方法的存取权限
-* @author 函数作者的名字和邮箱地址
-* @category 组织packages
-* @copyright 指明版权信息
+* @name Excel
+* @access 教务处、root
+* @author 丛广林
 * @const 指明常量
-* @deprecate 指明不推荐或者是废弃的信息
-* @example 示例
-* @exclude 指明当前的注释将不进行分析，不出现在文挡中
-* @final 指明这是一个最终的类、方法、属性，禁止派生、修改。
-* @global 指明在此函数中引用的全局变量
-* @include 指明包含的文件的信息
-* @link 定义在线连接
-* @module 定义归属的模块信息
-* @modulegroup 定义归属的模块组
-* @package 定义归属的包的信息
-* @param 定义函数或者方法的参数信息
-* @return 定义函数或者方法的返回信息
-* @see 定义需要参考的函数、变量，并加入相应的超级连接。
-* @since 指明该api函数或者方法是从哪个版本开始引入的
-* @static 指明变量、类、函数是静态的。
-* @throws 指明此函数可能抛出的错误异常,极其发生的情况
-* @todo 指明应该改进或没有实现的地方
-* @var 定义说明变量/属性。
-* @version 定义版本信息
+* @module Home
+* @throws linux 未设置public文件夹中Excel和Csv文件夹权限会报错
+* @version 1.0
 */
 class ExcelController extends BaseController {
 
@@ -37,6 +18,18 @@ class ExcelController extends BaseController {
     	$this->display('');
     }
 
+    /**
+    * @name showExcel
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param stunum传入学号为,,分割的字符串
+    * @return 返回csv文件
+    * @throws linux 未设置Public文件夹中Excel和Csv文件夹权限会报错
+    * @todo 前端未作ajaxform，用户体验想对一般
+    * @var 定义说明变量/属性。
+    * @version 1.0
+    */
     public function showExcel(){
     	$student = M('student');
     	$goal_id = explode(',',I('post.stunum'));
@@ -72,7 +65,18 @@ class ExcelController extends BaseController {
     public function export(){
     	$this->display('');
     }
-
+    /**
+    * @name import
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param 传入xlsx或xls文件
+    * @return 
+    * @throws linux 未设置Public文件夹中Excel和Csv文件夹权限会报错
+    * @todo 前端未作ajaxform，用户体验想对一般；文件大小未设置限制，需上线后考虑
+    * @var phpExcel实例化phpexcel插件
+    * @version 1.0
+    */
     public function import(){  
     	$upload = new \Think\Upload();
 		$upload->maxSize = 0;
@@ -82,7 +86,7 @@ class ExcelController extends BaseController {
 		$upload->autoSub = false;
 	    $a = $upload->upload();
         if($upload->getError() != null){
-            $this->error("您未上传文件");
+            $this->error($upload->getError());
         }
     	import("Org.Util.PHPExcel");
 		//要导入的xls文件，位于根目录下的Public文件夹
@@ -136,7 +140,7 @@ class ExcelController extends BaseController {
         	$output = $excel->where($condition)->find();
         	//var_dump($output);
         	if($output){
-            	$goal = $excel->where($condition)->data($value)->save();
+            	$goal = $excel->where($condition)->data($value)->lock(true)->save();
         	}else{
         		$goal = $excel->add($value);
         	}
@@ -158,7 +162,21 @@ class ExcelController extends BaseController {
         }
     }
 
-
+    /**
+    * @name searchStudent
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param stunum=>学号,class_id=>班级号,province=>省份
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    "data"  => $goal_student,
+                    ]
+    * @throws 
+    * @todo 
+    * @var 
+    * @version 1.0
+    */
     public function searchStudent(){
     	if(I('post.stunum')!=null){
     		$condition['stu_id'] = I('post.stunum');
@@ -187,6 +205,18 @@ class ExcelController extends BaseController {
     	}
     }
 
+    /**
+    * @name update
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param stunum=>学号,sex=>性别,status=>状态,class_id=>班级号,province=>省份
+    * @return 
+    * @throws 
+    * @todo 换成ajaxform,更新判断多样化
+    * @var 
+    * @version 1.0
+    */
     public function update(){
         $student = M('student');
         $content = array(
@@ -206,7 +236,18 @@ class ExcelController extends BaseController {
             $this->error("修改失败");
         }
     }
-
+    /**
+    * @name addAnnex
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param 传入doc、docx、zip
+    * @return 
+    * @throws linux 未设置Public文件夹中EAnnex文件夹权限会报错
+    * @todo 赞暂不支持多文件上传;前端未作ajaxform，用户体验想对一般；文件大小未设置限制，需上线后考虑
+    * @var $log实例化Model添加日志
+    * @version 1.0
+    */
     public function addAnnex(){
         $upload = new \Think\Upload();
         $upload->maxSize = 0;
@@ -215,6 +256,9 @@ class ExcelController extends BaseController {
         $upload->saveName = time().'_'.mt_rand();
         $upload->autoSub = false;
         $a = $upload->upload();
+        if($upload->getError() != null){
+            $this->error($upload->getError());
+        }
         $annex = M('annex');
         $content = array(
                 "username" => session('username'),
@@ -234,7 +278,20 @@ class ExcelController extends BaseController {
             $this->error("添加失败");
         }
     }
-
+    /**
+    * @name searchStudent
+    * @access 教务处、root
+    * @const 指明常量
+    * @module Home
+    * @param stunum=>学号,class_id=>班级号,province=>省份，idcard=>身份证,salt=>加密盐
+    * @return $info[ "info"  => "xxxx",
+                    "state" => x0x,
+                    ]
+    * @throws 
+    * @todo 判断多样化
+    * @var 
+    * @version 1.0
+    */
     public function addOne(){
         $salt = mt_rand(10,200000);
         $content = array(
