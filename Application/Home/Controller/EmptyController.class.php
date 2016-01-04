@@ -4,6 +4,11 @@ namespace Home\Controller;
 use Think\Controller;
 use Think\Exception;
 
+/**
+*访问空方法(URL)指示页
+* @name Empty
+* @version 1.0
+*/
 class EmptyController extends Controller {
     public function index(){
 //        $indexSite = U(CONTROLLER_NAME . '/' . ACTION_NAME);
