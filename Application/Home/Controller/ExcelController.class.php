@@ -150,6 +150,11 @@ class ExcelController extends BaseController {
         		"info"  => "success",
                 "state" => 200,
         	);
+            $all_student = $excel->select();
+            foreach ($all_student as $key => $student_value) {
+                S($student_value['stu_id'],$student_value);
+            }
+            S('stu',1);
             $log = D('Log');
             $log->addLog('导入学生');
             $this->success("添加成功");
@@ -178,8 +183,31 @@ class ExcelController extends BaseController {
     * @version 1.0
     */
     public function searchStudent(){
+        $student = M('student');
+        if(S('stu') == null){
+            $all_student = $student->select();
+            foreach ($all_student as $key => $value) {
+                S($value['stu_id'],$value);
+            }
+            S('stu',1);
+        }
     	if(I('post.stunum')!=null){
-    		$condition['stu_id'] = I('post.stunum');
+    		$goal_student = S(I('post.stunum'));
+            $goal_studentnow[0] = $goal_student;
+            if(!$goal_student){
+                $info = array(
+                        "info"  => "failed",
+                        "state" => 404,
+                    );
+                echo json_encode($info);exit;
+            }else{
+                $info = array(
+                        "info"  => "success",
+                        "state" => 200,
+                        "data"  => $goal_studentnow,
+                    );
+                echo json_encode($info);exit;
+            }
     	}
     	if(I('post.classid')!=null){
     		$condition['class_id'] = I('post.classid');
@@ -187,7 +215,6 @@ class ExcelController extends BaseController {
     	if(I('post.province')!=null){
     		$condition['province'] = I('post.province');
     	}
-    	$student = M('student');
     	$goal_student = $student->where($condition)->select();
     	if(!$goal_student){
     		$info = array(
