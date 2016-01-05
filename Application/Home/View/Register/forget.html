@@ -66,11 +66,11 @@
     <script src = "__PUBLIC__/js/jquery.min.js"></script>
     <script>
         var sendUrl = "{:U('Register/sendMail')}"; 
-        var user_id = $('#user_name').val();
-        if(user_id == null){
-            alert('请输入学号');
-        }else{
-            $('#sendMail').on('click', function () {
+        $('#sendMail').on('click', function () {
+            var user_id = $('#user_name').val();
+            if(user_id == null){
+                alert('请输入学号');
+            }else{
                 $.ajax({
                     url: sendUrl,
                     type: 'POST',
@@ -87,10 +87,8 @@
                         alert('网络错误');
                     }
                 })
+                }
             });
-        }
-    </script>
-    <script>
         $('#login-button').click(function(event){
             event.preventDefault();
             $('.all').addClass('form-success');
