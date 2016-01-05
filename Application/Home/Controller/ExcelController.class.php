@@ -140,7 +140,7 @@ class ExcelController extends BaseController {
         	$output = $excel->where($condition)->find();
         	//var_dump($output);
         	if($output){
-            	$goal = $excel->where($condition)->data($value)->lock(true)->save();
+            	$goal = $excel->where($condition)->data($value)->lock(true)->save();//悲观锁
         	}else{
         		$goal = $excel->add($value);
         	}
